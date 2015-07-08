@@ -1,0 +1,555 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<title>Warrior Gear Calculator</title>
+<script>
+	function calculateStats() {
+
+	}
+
+</script>
+<style type="text/css">
+.tooltip-inner {
+	text-align:left;
+    white-space:pre-wrap;
+}
+</style>
+</head>
+<body>
+<div class="modal fade" id="gearModal" tabindex="-1" role="dialog" aria-labelledby="gearModalLabel">
+  <div class="modal-dialog" role="document">
+	<div class="modal-content">
+	  <div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h4 class="modal-title" id="gearModalLabel">Slot</h4>
+	  </div>
+	  <div class="modal-body">
+		<form class='form-horizontal' id='statForm'>
+		  <input name='slotId' id='slotId' type='text' value=""></input>
+		  <span class="form-group">
+			<label for="strength-input" class="control-label">Strength:</label>
+			<input type="number" name="strength" class="form-control" id="strength-input">
+		  </span>
+		  <span class="form-group">
+			<label for="critical-input" class="control-label">Critical Strike:</label>
+			<input type="number" class="form-control" name="critical" id="critical-input"></input>
+		  </span>
+		  <span class="form-group">
+			<label for="mastery-input" class="control-label">Mastery:</label>
+			<input type="number" class="form-control" name="mastery" id="mastery-input"></input>
+		  </span>
+		  <span class="form-group">
+			<label for="multistrike-input" class="control-label">Multistrike:</label>
+			<input type="number" class="form-control" name="multistrike" id="multistrike-input"></input>
+		  </span>
+		  <span class="form-group">
+			<label for="haste-input" class="control-label">Haste:</label>
+			<input type="number" class="form-control" name="haste" id="haste-input"></input>
+		  </span>
+		  <span class="form-group">
+			<label for="versatility-input" class="control-label">Versatility:</label>
+			<input type="number" class="form-control" name="versatility" id="versatility-input"></input>
+		  </span>
+		</form>
+	  </div>
+	  <div class="modal-footer">
+		<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+		<button type="submit" id='statSubmit' data-dismiss="modal" class="btn btn-primary">OK</button>
+	  </div>
+	</div>
+  </div>
+</div>
+	<script>
+		$(document).ready(function() {
+			//$('.slot').hover(function (event){
+			//	var button = $(event.relatedTarget)
+  			$('[data-toggle="tooltip"]').tooltip();
+			});
+	</script>
+	<script>
+	$(document).ready(function() {
+		$('#multistrike-total').click(function() {
+			var x = $(this).val() + 100;
+			$(this).val(x);
+		});
+	});
+	</script>
+	<script>
+	$('#gearModal').on('show.bs.modal', function (event) {
+		var button = $(event.relatedTarget) // Button that triggered the modal
+		var slot = button.data('slot') // Extract info from data-* attributes
+		var slotId = button.attr('id')
+		// If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+		// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+		var modal = $(this)
+		var data = button.data("stats");
+		if(data == null){
+			modal.find('input[id="strength-input"]').val(0)
+			modal.find('input[id="critical-input"]').val(0)
+			modal.find('input[id="mastery-input"]').val(0)
+			modal.find('input[id="multistrike-input"]').val(0)
+			modal.find('input[id="haste-input"]').val(0)
+			modal.find('input[id="versatility-input"]').val(0)
+		}
+		else{
+			modal.find('input[id="strength-input"]').val(data.strength)
+			modal.find('input[id="critical-input"]').val(data.critical)
+			modal.find('input[id="mastery-input"]').val(data.mastery)
+			modal.find('input[id="multistrike-input"]').val(data.multistrike)
+			modal.find('input[id="haste-input"]').val(data.haste)
+			modal.find('input[id="versatility-input"]').val(data.versatility)
+		}
+		modal.find('.modal-title').text(slot)
+		modal.find('input[id="slotId"]').val(slotId)
+		})
+	</script>
+	<script>
+	$(document).ready(function() {
+		$('#showStats').click(function() {
+			console.log("button clicked");
+			strTotal = 0;
+			critTotal = 0;
+			mastTotal = 0;
+			multiTotal = 0;
+			hasteTotal = 0;
+			versTotal = 0;
+			$('.slot').each(function(i, element) {
+				console.log("looping");
+				var data = $(element).data("stats");
+				if(data == null){
+					console.log("null");
+				}
+				else{
+					strTotal += parseInt(data.strength);
+					critTotal += parseInt(data.critical);
+					mastTotal += parseInt(data.mastery);
+					multiTotal += parseInt(data.multistrike);
+					hasteTotal += parseInt(data.haste);
+					versTotal += parseInt(data.versatility);
+					console.log("not null");
+				}
+			});
+			critPercent = (critTotal / 110.0).toFixed(2);
+			mastPercent = (mastTotal / 110.0).toFixed(2);
+			multiPercent = (multiTotal / 110.0).toFixed(2);
+			hastePercent = (hasteTotal / 90.0).toFixed(2);
+			versPercent = (versTotal / 130.0).toFixed(2);
+			$('#critical-percent').text(critPercent + "%");
+			$('#mastery-percent').text(mastPercent + "%");
+			$('#multistrike-percent').text(multiPercent + "%");
+			$('#haste-percent').text(hastePercent + "%");
+			$('#vers-percent').text(versPercent + "%");
+			$('#strength-total').text(strTotal);
+			$('#critical-total').text(critTotal);
+			$('#mastery-total').text(mastTotal);
+			$('#multistrike-total').text(multiTotal);
+			$('#haste-total').text(hasteTotal);
+			$('#versatility-total').text(versTotal);
+			console.log("finished");
+		});
+	});
+	</script>
+	<script>
+	$('#statSubmit').click(function (event) {
+		var x = $('#statForm').serializeArray();
+		dataObj = {}
+		$(x).each(function(i, field){
+		  dataObj[field.name] = field.value;
+		});
+		var y = dataObj.slotId;
+		$('#'+y).data("stats",dataObj);
+
+		var tooltip = y.split("-")[0];
+		tooltip = tooltip + "-tooltip";
+		console.log(tooltip);
+		$('#'+tooltip).data('tooltip', false);
+		var content = "Strength:" + dataObj.strength + "\n" + "Critical: " + dataObj.critical + "\n" + "Mastery: " + dataObj.mastery + "\n" + "Multistrike: " + dataObj.multistrike
+									+ "\n" + "Haste: " + dataObj.haste + "\n" + "Versatility: " + dataObj.versatility; 
+		console.log(content)
+		$('#'+tooltip).tooltip('hide').
+			attr('data-original-title', content);
+	})
+	</script>
+	<div class="container-fluid">
+		<div class="row">
+			<div class='col-lg-8'>
+				<div class='row'>
+					<div class='col-md-6'>
+						<div class="media">
+						  <div class="media-left">
+						    <button type="button" class="btn btn-primary slot" id="head-slot" data-toggle="modal" data-target="#gearModal" data-slot="Head">
+						    <img id="head-tooltip" data-toggle="tooltip" data-placement="right" 
+						  	title="Strength: 0
+Critical : 0
+Mastery: 0
+Multistrike : 0
+Haste : 0
+Versatility : 0" class="media-object" src="..." alt="...">	
+						    </button>
+						  </div>
+						  <div class="media-body">
+						    <h5 class="media-heading">Head</h5>
+						    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						  </div>
+						</div>
+					</div>
+					<div class='col-md-6'>
+						<div class="media">
+						  <div class="media-left">
+							<button type="button" id="hands-slot" class="btn btn-primary slot" data-toggle="modal" data-target="#gearModal" data-slot="Hands">
+								<img id="hands-tooltip" data-toggle="tooltip" data-placement="right" 
+						  	title="Strength: 0
+Critical : 0
+Mastery: 0
+Multistrike : 0
+Haste : 0
+Versatility : 0" class="media-object" src="..." alt="...">
+							</button>
+						</div>
+							<div class="media-body">
+						    <h5 class="media-heading">Hands</h5>
+						    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						  </div>
+						</div>
+					</div>
+				</div>
+				<div class='row'>
+					<div class='col-md-6'>
+						<div class="media-left">
+						    <button type="button" id="neck-slot" class="btn btn-primary slot" data-toggle="modal" data-target="#gearModal" data-slot="Neck">
+						      <img id="neck-tooltip" data-toggle="tooltip" data-placement="right" 
+						  	title="Strength: 0
+Critical : 0
+Mastery: 0
+Multistrike : 0
+Haste : 0
+Versatility : 0" class="media-object" src="..." alt="...">
+						    </button>
+						  </div>
+						  <div class="media-body">
+						    <h5 class="media-heading">Neck</h5>
+						    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						  </div>
+					</div>
+					<div class='col-md-6'>
+						<div class="media">
+						  <div class="media-left">
+							<button type="button" id="waist-slot" class="btn btn-primary slot" data-toggle="modal" data-target="#gearModal" data-slot="Waist">
+								<img id="waist-tooltip" data-toggle="tooltip" data-placement="right" 
+						  	title="Strength: 0
+Critical : 0
+Mastery: 0
+Multistrike : 0
+Haste : 0
+Versatility : 0" class="media-object" src="..." alt="...">
+							</button>
+						</div>
+							<div class="media-body">
+						    <h5 class="media-heading">Waist</h5>
+						    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						  </div>
+						</div>
+					</div>
+				</div>
+				<div class='row'>
+					<div class='col-md-6'>
+						<div class="media">
+						  <div class="media-left">
+							<button type="button" id="shoulders-slot" class="btn btn-primary slot" data-toggle="modal" data-target="#gearModal" data-slot="Shoulders">
+								<img id="shoulders-tooltip" data-toggle="tooltip" data-placement="right" 
+						  	title="Strength: 0
+Critical : 0
+Mastery: 0
+Multistrike : 0
+Haste : 0
+Versatility : 0" class="media-object" src="..." alt="...">
+							</button>
+						</div>
+							<div class="media-body">
+						    <h5 class="media-heading">Shoulders</h5>
+						    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						  </div>
+						</div>
+					</div>
+					<div class='col-md-6'>
+						<div class="media">
+						  <div class="media-left">
+							<button type="button" id="legs-slot" class="btn btn-primary slot" data-toggle="modal" data-target="#gearModal" data-slot="Legs">
+								<img id="legs-tooltip" data-toggle="tooltip" data-placement="right" 
+						  	title="Strength: 0
+Critical : 0
+Mastery: 0
+Multistrike : 0
+Haste : 0
+Versatility : 0" class="media-object" src="..." alt="...">
+							</button>
+						</div>
+							<div class="media-body">
+						    <h5 class="media-heading">Legs</h5>
+						    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						  </div>
+						</div>
+					</div>
+				</div>
+				<div class='row'>
+					<div class='col-md-6'>
+						<div class="media">
+						  <div class="media-left">
+							<button type="button" id="chest-slot" class="btn btn-primary slot" data-toggle="modal" data-target="#gearModal" data-slot="Chest">
+								<img id="chest-tooltip" data-toggle="tooltip" data-placement="right" 
+						  	title="Strength: 0
+Critical : 0
+Mastery: 0
+Multistrike : 0
+Haste : 0
+Versatility : 0"class="media-object" src="..." alt="...">
+							</button>
+						</div>
+							<div class="media-body">
+						    <h5 class="media-heading">Chest</h5>
+						    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						  </div>
+						</div>
+					</div>
+					<div class='col-md-6'>
+						<div class="media">
+						  <div class="media-left">
+							<button type="button" id="boots-slot" class="btn btn-primary slot" data-toggle="modal" data-target="#gearModal" data-slot="Boots">
+								<img id="boots-tooltip" data-toggle="tooltip" data-placement="right" 
+						  	title="Strength: 0
+Critical : 0
+Mastery: 0
+Multistrike : 0
+Haste : 0
+Versatility : 0" class="media-object" src="..." alt="...">
+							</button>
+						</div>
+							<div class="media-body">
+						    <h5 class="media-heading">Boots</h5>
+						    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						  </div>
+						</div>
+					</div>
+				</div>
+				<div class='row'>
+					<div class='col-md-6'>
+						<div class="media">
+						  <div class="media-left">
+							<button type="button" id="cape-slot" class="btn btn-primary slot" data-toggle="modal" data-target="#gearModal" data-slot="Cape">
+								<img id="cape-tooltip" data-toggle="tooltip" data-placement="right" 
+						  	title="Strength: 0
+Critical : 0
+Mastery: 0
+Multistrike : 0
+Haste : 0
+Versatility : 0" class="media-object" src="..." alt="...">
+							</button>
+						</div>
+							<div class="media-body">
+						    <h5 class="media-heading">Cape</h5>
+						    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						  </div>
+						</div>
+					</div>
+					<div class='col-md-6'>
+						<div class="media">
+						  <div class="media-left">
+							<button type="button" id="finger1-slot" class="btn btn-primary slot" data-toggle="modal" data-target="#gearModal" data-slot="Finger">
+								<img id="finger1-tooltip" data-toggle="tooltip" data-placement="right" 
+						  	title="Strength: 0
+Critical : 0
+Mastery: 0
+Multistrike : 0
+Haste : 0
+Versatility : 0" class="media-object" src="..." alt="...">
+							</button>
+						</div>
+							<div class="media-body">
+						    <h5 class="media-heading">Finger</h5>
+						    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						  </div>
+						</div>
+					</div>
+				</div>
+				<div class='row'>
+					<div class='col-md-6'>
+						Shirt
+					</div>
+					<div class='col-md-6'>
+						<div class="media">
+						  <div class="media-left">
+							<button type="button" id="finger2-slot" class="btn btn-primary slot" data-toggle="modal" data-target="#gearModal" data-slot="Finger">
+								<img id="finger2-tooltip" data-toggle="tooltip" data-placement="right" 
+						  	title="Strength: 0
+Critical : 0
+Mastery: 0
+Multistrike : 0
+Haste : 0
+Versatility : 0" class="media-object" src="..." alt="...">
+							</button>
+						</div>
+							<div class="media-body">
+						    <h5 class="media-heading">Finger</h5>
+						    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						  </div>
+						</div>
+					</div>
+				</div>
+				<div class='row'>
+					<div class='col-md-6'>
+						Tabard
+					</div>
+					<div class='col-md-6'>
+						<div class="media">
+						  <div class="media-left">
+							<button type="button" id="trinket1-slot" class="btn btn-primary slot" data-toggle="modal" data-target="#gearModal" data-slot="Trinket">
+								<img id="trinket1-tooltip" data-toggle="tooltip" data-placement="right" 
+						  	title="Strength: 0
+Critical : 0
+Mastery: 0
+Multistrike : 0
+Haste : 0
+Versatility : 0" class="media-object" src="..." alt="...">
+							</button>
+						</div>
+							<div class="media-body">
+						    <h5 class="media-heading">Trinket</h5>
+						    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						  </div>
+						</div>
+					</div>
+				</div>
+				<div class='row'>
+					<div class='col-md-6'>
+						<div class="media">
+						  <div class="media-left">
+							<button type="button" id="wrist-slot" class="btn btn-primary slot" data-toggle="modal" data-target="#gearModal" data-slot="Wrist">
+								<img id="wrist-tooltip" data-toggle="tooltip" data-placement="right" 
+						  	title="Strength: 0
+Critical : 0
+Mastery: 0
+Multistrike : 0
+Haste : 0
+Versatility : 0" class="media-object" src="..." alt="...">
+							</button>
+						</div>
+							<div class="media-body">
+						    <h5 class="media-heading">Wrist</h5>
+						    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						  </div>
+						</div>
+					</div>
+					<div class='col-md-6'>
+						<div class="media">
+						  <div class="media-left">
+							<button type="button" id="trinket2-slot" class="btn btn-primary slot" data-toggle="modal" data-target="#gearModal" data-slot="Trinket">
+								<img id="trinket2-tooltip" data-toggle="tooltip" data-placement="right" 
+						  	title="Strength: 0
+Critical : 0
+Mastery: 0
+Multistrike : 0
+Haste : 0
+Versatility : 0" class="media-object" src="..." alt="...">
+							</button>
+						</div>
+							<div class="media-body">
+						    <h5 class="media-heading">Trinket</h5>
+						    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						  </div>
+						</div>
+					</div>
+				</div>	
+				<div class='row'>
+					<div class='col-md-6'>
+						<div class="media">
+						  <div class="media-left">
+							<button type="button" id="weapon1-slot" class="btn btn-primary slot" data-toggle="modal" data-target="#gearModal" data-slot="Main Hand">
+								<img id="weapon1-tooltip" data-toggle="tooltip" data-placement="right" 
+						  	title="Strength: 0
+Critical : 0
+Mastery: 0
+Multistrike : 0
+Haste : 0
+Versatility : 0" class="media-object" src="..." alt="...">
+							</button>
+						</div>
+							<div class="media-body">
+						    <h5 class="media-heading">Main Hand</h5>
+						    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						  </div>
+						</div>
+					</div>
+					<div class='col-md-6'>
+						<div class="media">
+						  <div class="media-left">
+							<button type="button" id="weapon2-slot" class="btn btn-primary slot" data-toggle="modal" data-target="#gearModal" data-slot="Off Hand">
+								<img id="weapon2-tooltip" data-toggle="tooltip" data-placement="right" 
+						  	title="Strength: 0
+Critical : 0
+Mastery: 0
+Multistrike : 0
+Haste : 0
+Versatility : 0" class="media-object" src="..." alt="...">
+							</button>
+						</div>
+							<div class="media-body">
+						    <h5 class="media-heading">Off Hand</h5>
+						    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						  </div>
+						</div>
+					</div>
+				</div>					
+			</div>
+			<div class='col-lg-4'>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Stats</h3>
+					</div>
+					<div class="panel-body">
+						<table class="table table-striped">
+							<tr>
+								<th></th>
+								<th>Rating</th>
+								<th>%</th>
+							</tr>
+							<tr>
+								<td>Strength</td>
+								<td id="strength-total">0</td>
+								<td></td>
+							</tr>
+							<tr>
+								<td>Critical Strike</td>
+								<td id="critical-total">0</td>
+								<td id="critical-percent">0%</td>
+							</tr>
+							<tr>
+								<td>Mastery</td>
+								<td id="mastery-total">0</td>
+								<td id="mastery-percent">0%</td>
+							</tr>
+							<tr>
+								<td>Multistrike</td>
+								<td id="multistrike-total">0</td>
+								<td id="multistrike-percent">0%</td>
+							</tr>
+							<tr>
+								<td>Haste</td>
+								<td id="haste-total">0</td>
+								<td id="haste-percent">0%</td>
+							</tr>
+							<tr>
+								<td>Versatility</td>
+								<td id="versatility-total">0</td>
+								<td id="versatility-percent">0%</td>
+							</tr>
+						</table>
+						<button type="button" id="showStats">show stats</button>
+					</div>
+					</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
